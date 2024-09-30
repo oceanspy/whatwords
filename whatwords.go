@@ -1,49 +1,79 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
 	"os"
-	"whatwords/src/help"
+	"regexp"
+	"strconv"
 	"whatwords/src/message"
+	"whatwords/src/wordparser"
 )
 
 func main() {
-	if len(os.Args) == 1 {
-		help.CommandNotFoundAndHelp()
+	// Program to be piped
+
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Split(SplitByDelimiters)
+
+	var wordList []string
+
+	for scanner.Scan() {
+		wordList = append(wordList, scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		message.Error("Couldn't read the input. Stopping.")
+		message.Info("Did you correctly pipe whatwords into a valid text source ?")
+		message.Text("Example: cat myFile.txt | whatwords")
+		message.Ln()
+		fmt.Fprintln(os.Stderr, "Error reading input:", err)
 		os.Exit(0)
 	}
 
-	var wordList string
-	var filePath string
-	var url string
-	var action string
+	wordparser.RemoveSpecialCharactersFromList(&wordList)
+	wordparser.MakeLowerCaseFromList(&wordList)
+	wordparser.RemoveUnwantedWords(&wordList)
+	// wordparser.MergeMultiWordsWithPlus(&wordList)
 
-	for i, e := range os.Args {
-		if i == 0 {
-			continue
+	wordsWithInfos := wordparser.CalculateOccurence(wordList)
+	wordparser.SortByCount(&wordsWithInfos)
+
+	// Get the usage of predefined list
+
+	// Print the result
+	message.Ln()
+	message.FixedTextLength(10, ' ', " COUNT")
+	message.Text("MOST USED WORDS")
+	message.LineOf('─')
+	for i, e := range wordsWithInfos {
+		if i > 20 {
+			break
 		}
 
-		switch e {
-		case "-w":
-			wordList = os.Args[i+1]
-			continue
-		case "-f":
-			filePath = os.Args[i+1]
-			action = "file"
-			continue
-		case "-u":
-			url = os.Args[i+1]
-			action = "url"
-			continue
-		default:
+		message.FixedTextLength(10, ' ', " ", strconv.Itoa(e.Count))
+		message.Text(e.Word)
+	}
+
+}
+
+func SplitByDelimiters(data []byte, atEOF bool) (advance int, token []byte, err error) {
+	// Use a regular expression to find words, considering spaces and commas as delimiters
+	re := regexp.MustCompile(`[ ,;:.!?]+`) // Matches space, comma, semicolon, period, exclamation, and question mark
+
+	// Split the data by the regular expression
+	tokens := re.Split(string(data), -1)
+
+	// Iterate through the tokens and return the first non-empty token
+	for _, token := range tokens {
+		if token != "" {
+			advance = len(token)
+			return advance, []byte(token), nil
 		}
 	}
 
-	switch action {
-	case "file":
-		message.Info("Parsing file")
-	case "url":
-		message.Info("Parsing URL")
-	default:
-		help.CommandNotFoundAndHelp()
+	if atEOF {
+		return 0, nil, nil // No more data and no matches
 	}
+	return 0, nil, nil // Not at EOF, and no matches
 }

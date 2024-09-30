@@ -2,6 +2,7 @@ package message
 
 import (
 	"fmt"
+	"golang.org/x/term"
 	"os"
 	"strings"
 	"whatwords/src/color"
@@ -123,4 +124,17 @@ func Ask(message string) string {
 		os.Exit(0)
 	}
 	return response
+}
+
+func LineOf(char rune) {
+	fd := int(os.Stdin.Fd())
+	width, _, err := term.GetSize(fd)
+	if err != nil {
+		FixedTextLength(80, char, "")
+		Ln()
+		return
+	}
+
+	FixedTextLength(width, char, "")
+	Ln()
 }

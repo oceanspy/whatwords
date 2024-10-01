@@ -12,8 +12,6 @@ type TestWordList struct {
 }
 
 func TestSortByCount(t *testing.T) {
-	// SortByCount(sl *[]WordInfo) {
-
 	wordList := []WordInfo{
 		{Word: "enfin", Count: 1},
 		{Word: "test", Count: 2},

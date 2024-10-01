@@ -33,10 +33,10 @@ func main() {
 
 	wordparser.RemoveSpecialCharactersFromList(&wordList)
 	wordparser.MakeLowerCaseFromList(&wordList)
-	wordparser.RemoveUnwantedWords(&wordList)
+	wordparser.RemoveWordShorterThanExcept(&wordList, 2)
 	// wordparser.MergeMultiWordsWithPlus(&wordList)
 
-	wordsWithInfos := wordparser.CalculateOccurence(wordList)
+	wordsWithInfos := wordparser.CalculateOccurenceOfEachWordInsideSlice(wordList)
 	wordparser.SortByCount(&wordsWithInfos)
 
 	// Get the usage of predefined list

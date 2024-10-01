@@ -3,10 +3,23 @@ package wordparser
 import (
 	"golang.org/x/text/unicode/norm"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 	"unicode"
 )
+
+var ExcludedShortWords = []string{"c"}
+var WordsToReplace = map[string]string{
+	"c++":         "cpp",
+	"c#":          "csharp",
+	"objective-c": "objectivec",
+}
+var WordsToMerge = map[string]string{
+	"full stack": "fullstack",
+	"front end":  "frontend",
+	"back end":   "backend",
+}
 
 type WordInfo struct {
 	Word  string
@@ -19,7 +32,7 @@ func SortByCount(sl *[]WordInfo) {
 	})
 }
 
-func CalculateOccurence(sl []string) []WordInfo {
+func CalculateOccurenceOfEachWordInsideSlice(sl []string) []WordInfo {
 	var wordList []WordInfo
 
 	for len(sl) > 0 {
@@ -32,29 +45,44 @@ func CalculateOccurence(sl []string) []WordInfo {
 }
 
 func CountAndRemoveWord(sl *[]string, word string) int {
+	count := CountWord(sl, word)
+	RemoveWord(sl, word)
+
+	return count
+}
+
+func CountWord(sl *[]string, word string) int {
 	count := 0
-	for i, e := range *sl {
+	for _, e := range *sl {
 		if e == word {
 			count++
-			RemoveSliceElement(sl, i)
 		}
 	}
 
 	return count
 }
 
-func RemoveSliceElement(sl *[]string, i int) {
-	if i < 0 || i >= len(*sl) {
-		return // Index out of bounds, do nothing
+func RemoveWord(sl *[]string, word string) {
+	result := []string{}
+
+	for _, v := range *sl {
+		if v != word {
+			result = append(result, v) // Append only if the value doesn't match
+		}
 	}
-	*sl = append((*sl)[:i], (*sl)[i+1:]...)
+
+	*sl = result
 }
 
-func RemoveUnwantedWords(sl *[]string) {
+func RemoveSliceElement(sl *[]string, i int) {
+	*sl = slices.Delete(*sl, i, i+1)
+}
+
+func RemoveWordShorterThanExcept(sl *[]string, length int) {
 	var newSlice []string
 
 	for _, str := range *sl {
-		if len(str) < 2 {
+		if len(str) < length && !slices.Contains(ExcludedShortWords, str) {
 			continue
 		}
 		newSlice = append(newSlice, str)

@@ -12,6 +12,15 @@ import (
 )
 
 func main() {
+	// if os.Stdin is empty, print a message and exit
+	stat, _ := os.Stdin.Stat()
+	if (stat.Mode() & os.ModeCharDevice) != 0 {
+		message.Error("No input detected. Stopping.")
+		message.Info("Did you correctly pipe whatwords into a valid text source ?")
+		message.Text("Example: cat myFile.txt | whatwords")
+		os.Exit(0)
+	}
+
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Split(SplitByDelimiters)
 

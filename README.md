@@ -9,7 +9,7 @@ WhatWords is a simple CLI tool to parse documents or URL to find most used words
 ## Installation
 
 ```bash
-git clone git@github.com/w9nz/whatwords.git
+git clone git@github.com/oceanspy/whatwords.git
 cd whatwords
 ./install.sh
 ```

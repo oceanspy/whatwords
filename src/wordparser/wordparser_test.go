@@ -137,20 +137,6 @@ func TestCountAndRemoveWord(t *testing.T) {
 	}
 }
 
-func TestRemoveWord(t *testing.T) {
-	sl := []string{"simple", "test", "test", "enfin", "voila", "simple", "simple"}
-	word := "test"
-	expectedSl := []string{"simple", "enfin", "voila", "simple", "simple"}
-
-	RemoveWord(&sl, word)
-
-	for i := range sl {
-		if sl[i] != expectedSl[i] {
-			t.Errorf("Expected sl doesn't match -- got: %s, expected: %s", sl, expectedSl)
-		}
-	}
-}
-
 func TestCountWord(t *testing.T) {
 	sl := []string{"simple", "test", "test", "enfin", "voila", "simple", "simple"}
 	word := "test"

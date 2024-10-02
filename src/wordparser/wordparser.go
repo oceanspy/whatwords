@@ -31,6 +31,10 @@ func CalculateOccurenceOf(slToCount *[]string, sl *[]string) []WordInfo {
 	return wordList
 }
 
+func CalculateOccurenceOfEachWordInsideSlice(sl *[]string) []WordInfo {
+	return CalculateOccurenceOfEachWordInsideSliceBySorting(sl)
+}
+
 func CalculateOccurenceOfEachWordInsideSliceBySorting(sl *[]string) []WordInfo {
 	var wordList []WordInfo
 
@@ -69,10 +73,6 @@ func CalculateOccurenceOfEachWordInsideSliceByRemoving(sl *[]string) []WordInfo 
 	}
 
 	return wordList
-}
-
-func CalculateOccurenceOfEachWordInsideSlice(sl *[]string) []WordInfo {
-	return CalculateOccurenceOfEachWordInsideSliceBySorting(sl)
 }
 
 func SplitWordsByDelimiters(sl *[]string) {
@@ -139,13 +139,7 @@ func RemoveWordAppearances(sl *[]string, word string, appearances int) {
 }
 
 func RemoveEmptyWords(sl *[]string) {
-	RemoveWord(sl, "")
-}
-
-func RemoveWord(sl *[]string, word string) {
-	for slices.Contains(*sl, word) {
-		RemoveSliceElement(sl, slices.Index(*sl, word))
-	}
+	CountAndRemoveWord(sl, "")
 }
 
 func RemoveSliceElement(sl *[]string, i int) {
@@ -218,7 +212,6 @@ func ReplaceMultipleWords(sl *[]string, multipleWords map[string]string) {
 
 func RemoveExcludedWords(sl *[]string, excludedWords []string) {
 	for _, word := range excludedWords {
-		// RemoveWord(sl, word)
 		CountAndRemoveWord(sl, word)
 	}
 }

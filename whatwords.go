@@ -7,87 +7,9 @@ import (
 	"regexp"
 	"strconv"
 	"whatwords/src/message"
+	"whatwords/src/wordlist"
 	"whatwords/src/wordparser"
 )
-
-var ShortWordsToKeep = []string{
-	"c",
-}
-
-var MultipleWords = map[string]string{
-	"c plus plus": "cpp",
-	"full stack":  "fullstack",
-	"front end":   "frontend",
-	"back end":    "backend",
-	"web site":    "website",
-	"web app":     "webapp",
-	"web page":    "webpage",
-	"web design":  "webdesign",
-	"vue js":      "vuejs",
-}
-
-var SimilarWords = map[string]string{
-	"c++": "cpp",
-	"c#":  "csharp",
-	"js":  "javascript",
-	"ts":  "typescript",
-	"py":  "python",
-	"rb":  "ruby",
-}
-
-var ExtludedWords = []string{
-	"the",
-	"and",
-	"for",
-	"but",
-	"nor",
-	"les",
-	"des",
-	"une",
-	"sur",
-	"aux",
-	"avec",
-	"par",
-	"pour",
-	"chez",
-	"vers",
-	"depuis",
-	"pendant",
-	"avant",
-	"apres",
-	"pendant",
-	"contre",
-	"dans",
-	"envers",
-	"entre",
-	"jusque",
-	"sauf",
-	"sous",
-	"qui",
-	"que",
-	"quoi",
-	"notre",
-	"votre",
-	"leur",
-	"mon",
-	"leurs",
-	"vos",
-	"nos",
-	"son",
-	"ses",
-	"mes",
-	"tous",
-	"toutes",
-	"tout",
-	"toute",
-	"ton",
-	"nous",
-	"vous",
-	"ils",
-	"elles",
-	"elle",
-	"est",
-}
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
@@ -108,13 +30,13 @@ func main() {
 		os.Exit(0)
 	}
 
-	wordparser.RemoveLineBreaks(&wordList)
-	wordparser.ReplaceSimilarWords(&wordList, SimilarWords)
-	wordparser.RemoveSpecialCharacters(&wordList)
 	wordparser.MakeLowerCase(&wordList)
-	wordparser.ReplaceMultipleWords(&wordList, MultipleWords)
-	wordparser.RemoveWordShorterThanExcept(&wordList, 2, ShortWordsToKeep)
-	wordparser.RemoveExcludedWords(&wordList, ExtludedWords)
+	wordparser.RemoveLineBreaks(&wordList)
+	wordparser.ReplaceSimilarWords(&wordList, wordlist.GetSimilarWords())
+	wordparser.RemoveSpecialCharacters(&wordList)
+	wordparser.ReplaceMultipleWords(&wordList, wordlist.GetMultipleWords())
+	wordparser.RemoveWordShorterThanExcept(&wordList, 2, wordlist.GetShortWordsToKeep())
+	wordparser.RemoveExcludedWords(&wordList, wordlist.GetExcludedWords())
 
 	wordsWithInfos := wordparser.CalculateOccurenceOfEachWordInsideSlice(&wordList)
 	wordparser.SortByCount(&wordsWithInfos)

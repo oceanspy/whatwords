@@ -4,16 +4,19 @@ WhatWords is a simple CLI tool to parse documents or URL to find most used words
 
 ## Pre-requisites
 
-- Go 1.16 or higher
+- Go 1.21 or higher
 
 ## Installation
 
 ```bash
 git clone git@github.com/w9nz/whatwords.git
 cd whatwords
-go build -o build/whatwords whatwords.go
-ln -s /xxxxx/build/whatwords /usr/local/bin/whatwords
+./install.sh
 ```
+
+## Customization
+
+You can customize the predefined words by modifying the files in `~/.oceanspy/whatwords` directory
 
 ## Usage
 

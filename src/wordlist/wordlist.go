@@ -7,11 +7,11 @@ import (
 func GetExcludedWords() []string {
 	excludedWords, err := csvservice.ToSlice("excludedwords.csv")
 	if err != nil {
-		return DefaultExcludedWords
+		return []string{}
 	}
 
 	if len(excludedWords) == 0 {
-		return DefaultExcludedWords
+		return []string{}
 	}
 
 	return excludedWords
@@ -20,11 +20,11 @@ func GetExcludedWords() []string {
 func GetShortWordsToKeep() []string {
 	shortWordsToKeep, err := csvservice.ToSlice("shortwordstokeep.csv")
 	if err != nil {
-		return DefaultShortWordsToKeep
+		return []string{}
 	}
 
 	if len(shortWordsToKeep) == 0 {
-		return DefaultShortWordsToKeep
+		return []string{}
 	}
 
 	return shortWordsToKeep
@@ -33,11 +33,11 @@ func GetShortWordsToKeep() []string {
 func GetMultipleWords() map[string]string {
 	multipleWords, err := csvservice.ToMap("multiplewords.csv")
 	if err != nil {
-		return DefaultMultipleWords
+		return map[string]string{}
 	}
 
 	if len(multipleWords) == 0 {
-		return DefaultMultipleWords
+		return map[string]string{}
 	}
 
 	return multipleWords
@@ -46,11 +46,11 @@ func GetMultipleWords() map[string]string {
 func GetSimilarWords() map[string]string {
 	similarWords, err := csvservice.ToMap("similarwords.csv")
 	if err != nil {
-		return DefaultSimilarWords
+		return map[string]string{}
 	}
 
 	if len(similarWords) == 0 {
-		return DefaultSimilarWords
+		return map[string]string{}
 	}
 
 	return similarWords

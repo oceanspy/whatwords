@@ -19,7 +19,7 @@ cd whatwords
 ```bash
 cd whatwords
 git pull origin main
-./install.sh
+./update.sh
 ```
 
 ## Uninstall

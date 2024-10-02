@@ -153,16 +153,11 @@ func RemoveSliceElement(sl *[]string, i int) {
 }
 
 func RemoveWordShorterThanExcept(sl *[]string, length int, excludedShortWords []string) {
-	var newSlice []string
-
-	for _, str := range *sl {
-		if len(str) <= length && !slices.Contains(excludedShortWords, str) {
-			continue
+	for i := len(*sl) - 1; i >= 0; i-- {
+		if len((*sl)[i]) <= length && !slices.Contains(excludedShortWords, (*sl)[i]) {
+			RemoveSliceElement(sl, i)
 		}
-		newSlice = append(newSlice, str)
 	}
-
-	*sl = newSlice
 }
 
 func ReplaceSimilarWords(sl *[]string, similarWords map[string]string) {

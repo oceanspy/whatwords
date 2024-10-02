@@ -175,13 +175,13 @@ func RemoveExcludedWords(sl *[]string, excludedWords []string) {
 	}
 }
 
-func RemoveSpecialCharactersFromList(sl *[]string) {
+func RemoveSpecialCharacters(sl *[]string) {
 	for i := range *sl {
-		RemoveSpecialCharacters(&(*sl)[i])
+		RemoveSpecialCharactersFromString(&(*sl)[i])
 	}
 }
 
-func RemoveSpecialCharacters(s *string) {
+func RemoveSpecialCharactersFromString(s *string) {
 	// Normalize the string (NFKD normal form decomposes characters)
 	t := norm.NFKD.String(*s)
 
@@ -208,12 +208,8 @@ func RemoveLineBreaks(sl *[]string) {
 	}
 }
 
-func MakeLowerCaseFromList(sl *[]string) {
+func MakeLowerCase(sl *[]string) {
 	for i := range *sl {
-		MakeLowerCase(&(*sl)[i])
+		(*sl)[i] = strings.ToLower((*sl)[i])
 	}
-}
-
-func MakeLowerCase(s *string) {
-	*s = strings.ToLower(*s)
 }

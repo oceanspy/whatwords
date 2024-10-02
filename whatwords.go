@@ -63,6 +63,30 @@ var ExtludedWords = []string{
 	"jusque",
 	"sauf",
 	"sous",
+	"qui",
+	"que",
+	"quoi",
+	"notre",
+	"votre",
+	"leur",
+	"mon",
+	"leurs",
+	"vos",
+	"nos",
+	"son",
+	"ses",
+	"mes",
+	"tous",
+	"toutes",
+	"tout",
+	"toute",
+	"ton",
+	"nous",
+	"vous",
+	"ils",
+	"elles",
+	"elle",
+	"est",
 }
 
 func main() {
@@ -86,8 +110,8 @@ func main() {
 
 	wordparser.RemoveLineBreaks(&wordList)
 	wordparser.ReplaceSimilarWords(&wordList, SimilarWords)
-	wordparser.RemoveSpecialCharactersFromList(&wordList)
-	wordparser.MakeLowerCaseFromList(&wordList)
+	wordparser.RemoveSpecialCharacters(&wordList)
+	wordparser.MakeLowerCase(&wordList)
 	wordparser.ReplaceMultipleWords(&wordList, MultipleWords)
 	wordparser.RemoveWordShorterThanExcept(&wordList, 2, ShortWordsToKeep)
 	wordparser.RemoveExcludedWords(&wordList, ExtludedWords)

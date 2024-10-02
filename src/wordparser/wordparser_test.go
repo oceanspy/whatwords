@@ -206,10 +206,10 @@ func TestRemoveExcludedWords(t *testing.T) {
 	}
 }
 
-func TestRemoveSpecialCharacters(t *testing.T) {
+func TestRemoveSpecialCharactersFromString(t *testing.T) {
 	s := "éàçèù$-<>-$(`)[]{}||\\^@#~ôûêâôî"
 	expectedS := "eaceuoueaoi"
-	RemoveSpecialCharacters(&s)
+	RemoveSpecialCharactersFromString(&s)
 
 	if s != expectedS {
 		t.Errorf("Expected string doesn't match -- got: %s, expected: %s", s, expectedS)

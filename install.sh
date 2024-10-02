@@ -17,5 +17,9 @@ cp data/*.csv $HOME/.oceanspy/whatwords
 echo "Do you want to create a symlink to /usr/local/bin/whatwords? (y/n)"
 read -r answer
 if [ "$answer" != "${answer#[Yy]}" ]; then
-    sudo ln -s $(PWD)/build/whatwords /usr/local/bin/whatwords
+    if command -v sudo &>/dev/null; then
+        sudo ln -s $PWD/build/whatwords /usr/local/bin/whatwords
+    else
+        ln -s $PWD/build/whatwords /usr/local/bin/whatwords
+    fi
 fi

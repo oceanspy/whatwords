@@ -63,7 +63,7 @@ func TestCalculateOccurenceOfEachWordInsideSliceByRemoving(t *testing.T) {
 		{Word: "voila", Count: 1},
 	}
 
-	wordList := CalculateOccurenceOfEachWordInsideSlice(&sl)
+	wordList := CalculateOccurenceOfEachWordInsideSliceByRemoving(&sl)
 	SortByCount(&wordList)
 
 	if !reflect.DeepEqual(wordList, expectedWordList) {

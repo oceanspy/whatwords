@@ -4,8 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"regexp"
 	"strconv"
+	"strings"
+	"whatwords/src/color"
 	"whatwords/src/message"
 	"whatwords/src/wordlist"
 	"whatwords/src/wordparser"
@@ -13,16 +14,16 @@ import (
 
 func main() {
 	// if os.Stdin is empty, print a message and exit
-	stat, _ := os.Stdin.Stat()
-	if (stat.Mode() & os.ModeCharDevice) != 0 {
-		message.Error("No input detected. Stopping.")
-		message.Info("Did you correctly pipe whatwords into a valid text source ?")
-		message.Text("Example: cat myFile.txt | whatwords")
-		os.Exit(0)
-	}
+	//stat, _ := os.Stdin.Stat()
+	//if (stat.Mode() & os.ModeCharDevice) != 0 {
+	//	message.Error("No input detected. Stopping.")
+	//	message.Info("Did you correctly pipe whatwords into a valid text source ?")
+	//	message.Text("Example: cat myFile.txt | whatwords")
+	//	os.Exit(0)
+	//}
 
 	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Split(SplitByDelimiters)
+	scanner.Split(bufio.ScanWords)
 
 	var wordList []string
 
@@ -40,7 +41,9 @@ func main() {
 	}
 
 	wordparser.MakeLowerCase(&wordList)
+	wordparser.SplitWordsByDelimiters(&wordList)
 	wordparser.RemoveLineBreaks(&wordList)
+	wordparser.RemoveEmptyWords(&wordList)
 	wordparser.ReplaceSimilarWords(&wordList, wordlist.GetSimilarWords())
 	wordparser.RemoveSpecialCharacters(&wordList)
 	wordparser.ReplaceMultipleWords(&wordList, wordlist.GetMultipleWords())
@@ -50,40 +53,66 @@ func main() {
 	wordsWithInfos := wordparser.CalculateOccurenceOfEachWordInsideSlice(&wordList)
 	wordparser.SortByCount(&wordsWithInfos)
 
-	// Get the usage of predefined list
-
 	// Print the result
-	message.Ln()
-	message.FixedTextLength(10, ' ', " COUNT")
-	message.Text("MOST USED WORDS")
-	message.LineOf('─')
+	PrintTitle("Most used words")
 	for i, e := range wordsWithInfos {
 		if i > 20 {
 			break
 		}
 
-		message.FixedTextLength(10, ' ', " ", strconv.Itoa(e.Count))
-		message.Text(e.Word)
+		PrintRow(e)
+	}
+
+	// Get the usage of predefined list
+	customWords := wordlist.GetCustomWords()
+	if len(customWords) > 0 {
+		customWordsWithInfos := wordparser.CalculateOccurenceOf(&customWords, &wordList)
+
+		PrintTitle("Custom List of words")
+		for _, e := range customWordsWithInfos {
+			PrintRow(e)
+		}
 	}
 }
 
-func SplitByDelimiters(data []byte, atEOF bool) (advance int, token []byte, err error) {
-	// Use a regular expression to find words, considering spaces and commas as delimiters
-	re := regexp.MustCompile(`[ ,;:.!?]+`) // Matches space, comma, semicolon, period, exclamation, and question mark
+func PrintTitle(title string) {
+	message.Ln()
+	message.FixedTextLength(10, ' ', " COUNT")
+	message.Text(strings.ToUpper(title))
+	message.LineOf('─')
+}
 
-	// Split the data by the regular expression
-	tokens := re.Split(string(data), -1)
-
-	// Iterate through the tokens and return the first non-empty token
-	for _, token := range tokens {
-		if token != "" {
-			advance = len(token)
-			return advance, []byte(token), nil
-		}
+func PrintRow(e wordparser.WordInfo) {
+	wordToPrint := strings.ReplaceAll(e.Word, "+", " ")
+	if e.Count == 0 {
+		fmt.Print(color.Red)
+		message.FixedTextLength(10, ' ', " ", strconv.Itoa(e.Count))
+		fmt.Print(color.Reset)
+		message.Text(wordToPrint)
+	} else if e.Count <= 1 {
+		fmt.Print(color.Magenta)
+		message.FixedTextLength(10, ' ', " ", strconv.Itoa(e.Count))
+		fmt.Print(color.Reset)
+		message.Text(wordToPrint)
+	} else if e.Count <= 5 {
+		fmt.Print(color.Yellow)
+		message.FixedTextLength(10, ' ', " ", strconv.Itoa(e.Count))
+		fmt.Print(color.Reset)
+		message.Text(wordToPrint)
+	} else if e.Count <= 10 {
+		fmt.Print(color.Cyan)
+		message.FixedTextLength(10, ' ', " ", strconv.Itoa(e.Count))
+		fmt.Print(color.Reset)
+		message.Text(wordToPrint)
+	} else if e.Count > 10 {
+		fmt.Print(color.Green)
+		message.FixedTextLength(10, ' ', " ", strconv.Itoa(e.Count))
+		fmt.Print(color.Reset)
+		message.Text(wordToPrint)
+	} else {
+		fmt.Print(color.Gray)
+		message.FixedTextLength(10, ' ', " ", strconv.Itoa(e.Count))
+		fmt.Print(color.Reset)
+		message.Text(wordToPrint)
 	}
-
-	if atEOF {
-		return 0, nil, nil // No more data and no matches
-	}
-	return 0, nil, nil // Not at EOF, and no matches
 }

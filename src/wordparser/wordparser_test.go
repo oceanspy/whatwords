@@ -35,6 +35,25 @@ func TestSortByCount(t *testing.T) {
 	}
 }
 
+func TestCalculateOccurenceOf(t *testing.T) {
+	slToCount := []string{"simple", "test"}
+	sl := []string{"simple", "test", "test", "enfin", "voila", "simple", "simple"}
+
+	expectedWordList := []WordInfo{
+		{Word: "simple", Count: 3},
+		{Word: "test", Count: 2},
+	}
+
+	wordList := CalculateOccurenceOf(&slToCount, &sl)
+	SortByCount(&wordList)
+
+	for i := range wordList {
+		if wordList[i] != expectedWordList[i] {
+			t.Errorf("Expected sl doesn't match -- got: %v, expected: %v", wordList, expectedWordList)
+		}
+	}
+}
+
 func TestCalculateOccurenceOfEachWordInsideSliceBySorting(t *testing.T) {
 	sl := []string{"simple", "test", "test", "enfin", "voila", "simple", "simple"}
 
@@ -68,6 +87,19 @@ func TestCalculateOccurenceOfEachWordInsideSliceByRemoving(t *testing.T) {
 
 	if !reflect.DeepEqual(wordList, expectedWordList) {
 		t.Errorf("Expected wordList doesn't match -- got: %v, expected: %v", wordList, expectedWordList)
+	}
+}
+
+func TestSplitWordsByDelimiter(t *testing.T) {
+	sl := []string{"ra,simple,test;enfin!voila simple simple"}
+	expectedSl := []string{"ra", "simple", "test", "enfin", "voila", "simple", "simple"}
+
+	SplitWordsByDelimiters(&sl)
+
+	for i := range sl {
+		if sl[i] != expectedSl[i] {
+			t.Errorf("Expected sl doesn't match -- got: %s, expected: %s", sl[i], expectedSl[i])
+		}
 	}
 }
 

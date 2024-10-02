@@ -4,6 +4,19 @@ import (
 	"whatwords/src/csvservice"
 )
 
+func GetCustomWords() []string {
+	customWords, err := csvservice.ToSlice("customwords.csv")
+	if err != nil {
+		return []string{}
+	}
+
+	if len(customWords) == 0 {
+		return []string{}
+	}
+
+	return customWords
+}
+
 func GetExcludedWords() []string {
 	excludedWords, err := csvservice.ToSlice("excludedwords.csv")
 	if err != nil {

@@ -20,6 +20,17 @@ func SortByCount(sl *[]WordInfo) {
 	})
 }
 
+func CalculateOccurenceOf(slToCount *[]string, sl *[]string) []WordInfo {
+	var wordList []WordInfo
+
+	for _, wordToCount := range *slToCount {
+		count := CountWord(sl, wordToCount)
+		wordList = append(wordList, WordInfo{Word: wordToCount, Count: count})
+	}
+
+	return wordList
+}
+
 func CalculateOccurenceOfEachWordInsideSliceBySorting(sl *[]string) []WordInfo {
 	var wordList []WordInfo
 
@@ -64,6 +75,44 @@ func CalculateOccurenceOfEachWordInsideSlice(sl *[]string) []WordInfo {
 	return CalculateOccurenceOfEachWordInsideSliceBySorting(sl)
 }
 
+func SplitWordsByDelimiters(sl *[]string) {
+	var delimiters = []string{",", ";", ":", ".", "!", "?", " "}
+
+	for _, delimiter := range delimiters {
+		SplitWordsByDelimiter(sl, delimiter)
+	}
+}
+
+func SplitWordsByDelimiter(sl *[]string, delimiter string) {
+	var sliceItemToRemove []int
+	var toAppend []string
+
+	for wordIndex, wordValue := range *sl {
+
+		// If wordValue doesn't contain the delimiter, skip
+		if !strings.Contains(wordValue, delimiter) {
+			continue
+		}
+
+		// Break the word into a slice of words
+		words := strings.Split(wordValue, delimiter)
+
+		// Add the words to the slice
+		toAppend = append(toAppend, words...)
+
+		// Mark the word to remove from the slice
+		sliceItemToRemove = append(sliceItemToRemove, wordIndex)
+	}
+
+	// Remove the words from the slice
+	for i := len(sliceItemToRemove) - 1; i >= 0; i-- {
+		RemoveSliceElement(sl, sliceItemToRemove[i])
+	}
+
+	// Append the new words to the slice
+	*sl = append(*sl, toAppend...)
+}
+
 func CountAndRemoveWord(sl *[]string, word string) int {
 	count := CountWord(sl, word)
 	RemoveWordAppearances(sl, word, count)
@@ -87,6 +136,10 @@ func RemoveWordAppearances(sl *[]string, word string, appearances int) {
 		RemoveSliceElement(sl, slices.Index(*sl, word))
 		appearances--
 	}
+}
+
+func RemoveEmptyWords(sl *[]string) {
+	RemoveWord(sl, "")
 }
 
 func RemoveWord(sl *[]string, word string) {

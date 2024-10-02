@@ -73,6 +73,15 @@ func Text(messages ...string) {
 	fmt.Println()
 }
 
+func Print(messages ...string) {
+	message := ""
+	for _, m := range messages {
+		message += m
+	}
+
+	fmt.Print(message)
+}
+
 func FixedTextLength(length int, char rune, messages ...string) {
 	message := ""
 	for _, m := range messages {

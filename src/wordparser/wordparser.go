@@ -63,15 +63,9 @@ func CountWord(sl *[]string, word string) int {
 }
 
 func RemoveWord(sl *[]string, word string) {
-	result := []string{}
-
-	for _, v := range *sl {
-		if v != word {
-			result = append(result, v) // Append only if the value doesn't match
-		}
+	for slices.Contains(*sl, word) {
+		RemoveSliceElement(sl, slices.Index(*sl, word))
 	}
-
-	*sl = result
 }
 
 func RemoveSliceElement(sl *[]string, i int) {

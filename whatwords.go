@@ -11,8 +11,6 @@ import (
 )
 
 func main() {
-	// Program to be piped
-
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Split(SplitByDelimiters)
 
@@ -34,9 +32,9 @@ func main() {
 	wordparser.RemoveSpecialCharactersFromList(&wordList)
 	wordparser.MakeLowerCaseFromList(&wordList)
 	wordparser.RemoveWordShorterThanExcept(&wordList, 2)
-	// wordparser.MergeMultiWordsWithPlus(&wordList)
+	// wordparser.ReplaceSimilarWords(&wordList)
 
-	wordsWithInfos := wordparser.CalculateOccurenceOfEachWordInsideSlice(wordList)
+	wordsWithInfos := wordparser.CalculateOccurenceOfEachWordInsideSlice(&wordList)
 	wordparser.SortByCount(&wordsWithInfos)
 
 	// Get the usage of predefined list
@@ -54,7 +52,6 @@ func main() {
 		message.FixedTextLength(10, ' ', " ", strconv.Itoa(e.Count))
 		message.Text(e.Word)
 	}
-
 }
 
 func SplitByDelimiters(data []byte, atEOF bool) (advance int, token []byte, err error) {

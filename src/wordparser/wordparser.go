@@ -32,34 +32,73 @@ func SortByCount(sl *[]WordInfo) {
 	})
 }
 
-func CalculateOccurenceOfEachWordInsideSlice(sl []string) []WordInfo {
+func CalculateOccurenceOfEachWordInsideSliceBySorting(sl *[]string) []WordInfo {
 	var wordList []WordInfo
 
-	for len(sl) > 0 {
-		word := sl[0]
-		count := CountAndRemoveWord(&sl, word)
+	// Sort the slice
+	sort.Strings(*sl)
+
+	count := 0
+	currentWord := (*sl)[0]
+	for i := 0; i <= len(*sl); i++ {
+		if i == len(*sl) {
+			wordList = append(wordList, WordInfo{Word: currentWord, Count: count})
+			break
+		}
+
+		if (*sl)[i] == currentWord {
+			count++
+			continue
+		}
+
+		wordList = append(wordList, WordInfo{Word: currentWord, Count: count})
+
+		count = 1
+		currentWord = (*sl)[i]
+	}
+
+	return wordList
+}
+
+func CalculateOccurenceOfEachWordInsideSliceByRemoving(sl *[]string) []WordInfo {
+	var wordList []WordInfo
+
+	for len(*sl) > 0 {
+		word := (*sl)[0]
+		count := CountAndRemoveWord(sl, word)
 		wordList = append(wordList, WordInfo{Word: word, Count: count})
 	}
 
 	return wordList
 }
 
+func CalculateOccurenceOfEachWordInsideSlice(sl *[]string) []WordInfo {
+	return CalculateOccurenceOfEachWordInsideSliceBySorting(sl)
+}
+
 func CountAndRemoveWord(sl *[]string, word string) int {
 	count := CountWord(sl, word)
-	RemoveWord(sl, word)
+	RemoveWordAppearances(sl, word, count)
 
 	return count
 }
 
 func CountWord(sl *[]string, word string) int {
 	count := 0
-	for _, e := range *sl {
-		if e == word {
+	for i := range *sl {
+		if (*sl)[i] == word {
 			count++
 		}
 	}
 
 	return count
+}
+
+func RemoveWordAppearances(sl *[]string, word string, appearances int) {
+	for appearances > 0 {
+		RemoveSliceElement(sl, slices.Index(*sl, word))
+		appearances--
+	}
 }
 
 func RemoveWord(sl *[]string, word string) {

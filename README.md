@@ -14,6 +14,22 @@ cd whatwords
 ./install.sh
 ```
 
+## Update
+
+```bash
+cd whatwords
+git pull origin main
+./install.sh
+```
+
+## Uninstall
+
+```bash
+rm -rf whatwords
+rm -f /usr/local/bin/whatwords
+rm -rf ~/.oceanspy/whatwords
+```
+
 ## Customization
 
 You can customize the predefined words by modifying the files in `~/.oceanspy/whatwords` directory

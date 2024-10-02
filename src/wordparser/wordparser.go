@@ -9,18 +9,6 @@ import (
 	"unicode"
 )
 
-var ExcludedShortWords = []string{"c"}
-var WordsToReplace = map[string]string{
-	"c++":         "cpp",
-	"c#":          "csharp",
-	"objective-c": "objectivec",
-}
-var WordsToMerge = map[string]string{
-	"full stack": "fullstack",
-	"front end":  "frontend",
-	"back end":   "backend",
-}
-
 type WordInfo struct {
 	Word  string
 	Count int
@@ -111,17 +99,80 @@ func RemoveSliceElement(sl *[]string, i int) {
 	*sl = slices.Delete(*sl, i, i+1)
 }
 
-func RemoveWordShorterThanExcept(sl *[]string, length int) {
+func RemoveWordShorterThanExcept(sl *[]string, length int, excludedShortWords []string) {
 	var newSlice []string
 
 	for _, str := range *sl {
-		if len(str) < length && !slices.Contains(ExcludedShortWords, str) {
+		if len(str) <= length && !slices.Contains(excludedShortWords, str) {
 			continue
 		}
 		newSlice = append(newSlice, str)
 	}
 
 	*sl = newSlice
+}
+
+func ReplaceSimilarWords(sl *[]string, similarWords map[string]string) {
+	for i := range *sl {
+		if _, ok := similarWords[(*sl)[i]]; ok {
+			ReplaceSimilarWord(&(*sl)[i], similarWords)
+		}
+	}
+}
+
+func ReplaceSimilarWord(s *string, similarWords map[string]string) {
+	if val, ok := similarWords[*s]; ok {
+		*s = val
+	}
+}
+
+func ReplaceMultipleWords(sl *[]string, multipleWords map[string]string) {
+	var sliceItemToRemove []int
+	for wordsOfMultipleWords, wordValue := range multipleWords {
+
+		// Break the multiple words into a slice of words
+		words := strings.Split(wordsOfMultipleWords, " ")
+
+		for i := range *sl {
+			// check if current sl word is the first word of the multiple words
+			if (*sl)[i] != words[0] {
+				continue
+			}
+
+			// Check if all the words are the same and in the right order
+			success := true
+			for j := range words {
+				if words[j] != (*sl)[i+j] {
+					success = false
+					break
+				}
+			}
+
+			if !success {
+				continue
+			}
+
+			// Add the value to the slice
+			*sl = append(*sl, wordValue)
+
+			// Mark the words to remove from the slice
+			for j := range words {
+				sliceItemToRemove = append(sliceItemToRemove, i+j)
+			}
+		}
+	}
+
+	// Remove the words from the slice
+	for i := len(sliceItemToRemove) - 1; i >= 0; i-- {
+		RemoveSliceElement(sl, sliceItemToRemove[i])
+	}
+}
+
+func RemoveExcludedWords(sl *[]string, excludedWords []string) {
+	for _, word := range excludedWords {
+		// RemoveWord(sl, word)
+		CountAndRemoveWord(sl, word)
+	}
 }
 
 func RemoveSpecialCharactersFromList(sl *[]string) {
@@ -147,6 +198,14 @@ func RemoveSpecialCharacters(s *string) {
 	finalStr := re.ReplaceAllString(filtered, " ")
 
 	*s = finalStr
+}
+
+func RemoveLineBreaks(sl *[]string) {
+	for i := range *sl {
+		if strings.Contains((*sl)[i], "\n") {
+			(*sl)[i] = strings.ReplaceAll((*sl)[i], "\n", "")
+		}
+	}
 }
 
 func MakeLowerCaseFromList(sl *[]string) {

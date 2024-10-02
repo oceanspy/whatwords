@@ -10,6 +10,61 @@ import (
 	"whatwords/src/wordparser"
 )
 
+var ShortWordsToKeep = []string{
+	"c",
+}
+
+var MultipleWords = map[string]string{
+	"c plus plus": "cpp",
+	"full stack":  "fullstack",
+	"front end":   "frontend",
+	"back end":    "backend",
+	"web site":    "website",
+	"web app":     "webapp",
+	"web page":    "webpage",
+	"web design":  "webdesign",
+	"vue js":      "vuejs",
+}
+
+var SimilarWords = map[string]string{
+	"c++": "cpp",
+	"c#":  "csharp",
+	"js":  "javascript",
+	"ts":  "typescript",
+	"py":  "python",
+	"rb":  "ruby",
+}
+
+var ExtludedWords = []string{
+	"the",
+	"and",
+	"for",
+	"but",
+	"nor",
+	"les",
+	"des",
+	"une",
+	"sur",
+	"aux",
+	"avec",
+	"par",
+	"pour",
+	"chez",
+	"vers",
+	"depuis",
+	"pendant",
+	"avant",
+	"apres",
+	"pendant",
+	"contre",
+	"dans",
+	"envers",
+	"entre",
+	"jusque",
+	"sauf",
+	"sous",
+}
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Split(SplitByDelimiters)
@@ -29,10 +84,13 @@ func main() {
 		os.Exit(0)
 	}
 
+	wordparser.RemoveLineBreaks(&wordList)
+	wordparser.ReplaceSimilarWords(&wordList, SimilarWords)
 	wordparser.RemoveSpecialCharactersFromList(&wordList)
 	wordparser.MakeLowerCaseFromList(&wordList)
-	wordparser.RemoveWordShorterThanExcept(&wordList, 2)
-	// wordparser.ReplaceSimilarWords(&wordList)
+	wordparser.ReplaceMultipleWords(&wordList, MultipleWords)
+	wordparser.RemoveWordShorterThanExcept(&wordList, 2, ShortWordsToKeep)
+	wordparser.RemoveExcludedWords(&wordList, ExtludedWords)
 
 	wordsWithInfos := wordparser.CalculateOccurenceOfEachWordInsideSlice(&wordList)
 	wordparser.SortByCount(&wordsWithInfos)

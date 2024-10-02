@@ -144,13 +144,65 @@ func TestRemoveSliceElement(t *testing.T) {
 }
 
 func TestRemoveWordShorterThanExcept(t *testing.T) {
+	excludedShortWords := []string{"c"}
+
 	sl := []string{"simple", "test", "a", "àà", "enfin", "voila", "simple", "simple", "e", "ee", "eee", "c", "cc", "ccc"}
 	length := 2
 	expectedSl := []string{"simple", "test", "enfin", "voila", "simple", "simple", "eee", "c"}
-	RemoveWordShorterThanExcept(&sl, length)
+	RemoveWordShorterThanExcept(&sl, length, excludedShortWords)
 
 	if reflect.DeepEqual(sl, expectedSl) {
 		t.Errorf("Expected sl doesn't match -- got: %s, expected: %s", sl, expectedSl)
+	}
+}
+
+func TestReplaceSimilarWords(t *testing.T) {
+	similarWords := map[string]string{
+		"voila": "simple",
+		"enfin": "test",
+	}
+
+	sl := []string{"simple", "test", "enfin", "voila", "simple", "simple"}
+	ReplaceSimilarWords(&sl, similarWords)
+
+	expectedSl := []string{"simple", "test", "test", "simple", "simple", "simple"}
+
+	for i := range sl {
+		if sl[i] != expectedSl[i] {
+			t.Errorf("Expected sl doesn't match -- got: %s, expected: %s", sl, expectedSl)
+		}
+	}
+}
+
+func TestReplaceMultipleWords(t *testing.T) {
+	multipleWords := map[string]string{
+		"simple test": "simple-test",
+	}
+
+	sl := []string{"simple", "test", "enfin", "voila", "simple", "simple"}
+	ReplaceMultipleWords(&sl, multipleWords)
+
+	expectedSl := []string{"enfin", "voila", "simple", "simple", "simple-test"}
+
+	for i := range sl {
+		if sl[i] != expectedSl[i] {
+			t.Errorf("Expected sl doesn't match -- got: %s, expected: %s", sl, expectedSl)
+		}
+	}
+}
+
+func TestRemoveExcludedWords(t *testing.T) {
+	excludedWords := []string{"simple", "test"}
+
+	sl := []string{"simple", "test", "enfin", "voila", "simple", "simple"}
+	RemoveExcludedWords(&sl, excludedWords)
+
+	expectedSl := []string{"enfin", "voila"}
+
+	for i := range sl {
+		if sl[i] != expectedSl[i] {
+			t.Errorf("Expected sl doesn't match -- got: %s, expected: %s", sl, expectedSl)
+		}
 	}
 }
 
@@ -161,5 +213,17 @@ func TestRemoveSpecialCharacters(t *testing.T) {
 
 	if s != expectedS {
 		t.Errorf("Expected string doesn't match -- got: %s, expected: %s", s, expectedS)
+	}
+}
+
+func TestRemoveLineBreaks(t *testing.T) {
+	sl := []string{"simple", "test\n", "enfin\n", "voila", "simple\n", "simple\n"}
+	expectedSl := []string{"simple", "test", "enfin", "voila", "simple", "simple"}
+	RemoveLineBreaks(&sl)
+
+	for i := range sl {
+		if sl[i] != expectedSl[i] {
+			t.Errorf("Expected sl doesn't match -- got: %s, expected: %s", sl, expectedSl)
+		}
 	}
 }

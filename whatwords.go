@@ -14,13 +14,20 @@ import (
 
 func main() {
 	// if os.Stdin is empty, print a message and exit
-	//stat, _ := os.Stdin.Stat()
-	//if (stat.Mode() & os.ModeCharDevice) != 0 {
-	//	message.Error("No input detected. Stopping.")
-	//	message.Info("Did you correctly pipe whatwords into a valid text source ?")
-	//	message.Text("Example: cat myFile.txt | whatwords")
-	//	os.Exit(0)
-	//}
+	stat, _ := os.Stdin.Stat()
+	if (stat.Mode() & os.ModeCharDevice) != 0 {
+		message.Error("No input detected. Stopping.")
+		message.Info("Did you correctly pipe whatwords into a valid text source ?")
+		message.Text("Example: cat myFile.txt | whatwords")
+		os.Exit(0)
+	}
+
+	maxWordsToShow := 20
+	if len(os.Args) == 2 {
+		if _, err := strconv.Atoi(os.Args[1]); err == nil {
+			maxWordsToShow, _ = strconv.Atoi(os.Args[1])
+		}
+	}
 
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Split(bufio.ScanWords)
@@ -56,7 +63,7 @@ func main() {
 	// Print the result
 	PrintTitle("Most used words")
 	for i, e := range wordsWithInfos {
-		if i > 20 {
+		if i > maxWordsToShow {
 			break
 		}
 

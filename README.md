@@ -6,6 +6,15 @@ WhatWords is a simple CLI tool to parse documents or URL to find most used words
 
 - Go 1.21 or higher
 
+## Usage
+
+```bash
+cat myFile.txt | whatwords 
+cat myFile.txt | whatwords 50 
+```
+
+__50__ is the number of words to display. Default is 20.
+
 ## Installation
 
 ```bash
@@ -110,9 +119,3 @@ new york,new+york
 ```
 
 All occurrences of the first word will be replaced by the second word. The `+` character is used to separate the words.
-
-## Usage
-
-```bash
-cat myFile.txt | whatwords
-```

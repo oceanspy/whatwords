@@ -74,7 +74,7 @@ Example:
 
 ```csv
 js,javasscript
-fullstack,full+stack
+c++,cpp
 ...
 ```
 

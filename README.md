@@ -96,7 +96,7 @@ the
 
 ### Short Words to keep
 
-By default, all words with less than 3 characters are excluded from the search. You can change this by modifying the `shortwords.csv` file in the `~/.oceanspy/whatwords` directory.
+By default, all words with less than 3 characters are excluded from the search. You can add exception by modifying the `shortwords.csv` file in the `~/.oceanspy/whatwords` directory.
 
 All words need to be in lowercase, one word per line.
 

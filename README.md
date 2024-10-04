@@ -2,6 +2,9 @@
 
 WhatWords is a simple CLI tool to parse documents or URL to find most used words and predefined words
 
+![alt text](https://github.com/oceanspy/whatwords/blob/main/whatwords-screenshot0.png?raw=true)
+![alt text](https://github.com/oceanspy/whatwords/blob/main/whatwords-screenshot1.png?raw=true)
+
 ## Pre-requisites
 
 - Go 1.21 or higher

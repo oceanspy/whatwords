@@ -74,6 +74,7 @@ func main() {
 	customWords := wordlist.GetCustomWords()
 	if len(customWords) > 0 {
 		customWordsWithInfos := wordparser.CalculateOccurenceOf(&customWords, &wordList)
+		wordparser.SortByCount(&customWordsWithInfos)
 
 		PrintTitle("Custom List of words")
 		for _, e := range customWordsWithInfos {

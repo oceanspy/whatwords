@@ -10,13 +10,17 @@ fi
 
 go build -o build/whatwords whatwords.go
 
-mkdir -p $HOME/.oceanspy/whatwords
-cp data/*.csv $HOME/.oceanspy/whatwords
+echo "Do you want to copy the default configuration to ~/.oceanspy/whatwords ? (y/n)"
+read -r answerCopy
+if [ "$answerCopy" != "${answerLn#[Yy]}" ]; then
+    mkdir -p $HOME/.oceanspy/whatwords
+    cp data/*.csv $HOME/.oceanspy/whatwords
+fi
 
 # Ask to create a symlink
 echo "Do you want to create a symlink to /usr/local/bin/whatwords? (y/n)"
-read -r answer
-if [ "$answer" != "${answer#[Yy]}" ]; then
+read -r answerLn
+if [ "$answerLn" != "${answerLn#[Yy]}" ]; then
     if command -v sudo &>/dev/null; then
         sudo ln -s $PWD/build/whatwords /usr/local/bin/whatwords
     else
